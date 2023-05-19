@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,13 +24,13 @@
 
     .feed {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
     }
 
     .post {
-      width: 300px;
-      margin: 10px;
+      width: 600px;
+      margin-bottom: 20px;
       padding: 10px;
       background-color: #f9f9f9;
       border: 1px solid #ddd;
@@ -38,9 +47,15 @@
       margin-top: 10px;
       font-size: 14px;
     }
+
+    .logout-btn {
+      text-align: center;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
+<?php include 'header.php'; ?>
   <h1>Image Feed</h1>
   <div class="feed">
     <?php
@@ -50,14 +65,17 @@
 
     while ($row = $result->fetch_assoc()) {
         echo '<div class="post">';
-        echo '<img src="' . $row['image'] . '" alt="Post Image">';
-        echo '<p>' . $row['caption'] . '</p>';
+        echo '<img src="' . htmlspecialchars($row['image']) . '" alt="Post Image">';
+        echo '<p>' . htmlspecialchars($row['caption']) . '</p>';
         echo '</div>';
     }
 
     $result->free();
     $mysqli->close();
     ?>
+  </div>
+  <div class="logout-btn">
+    <a href="logout.php" class="btn btn-danger">Logout</a>
   </div>
 </body>
 </html>

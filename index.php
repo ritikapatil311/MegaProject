@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </style>
 </head>
 <body>
-  <h1>Image Upload</h1>
+<?php include 'header.php'; ?>
 
   <?php if ($_SERVER['REQUEST_METHOD'] !== 'POST') { ?>
     <div class="upload-form">

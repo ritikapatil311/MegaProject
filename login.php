@@ -4,7 +4,7 @@ session_start();
 require_once "db.php";
 
 if(isset($_SESSION['user_id'])!="") {
-    header("Location: dashboard.php");
+    header("Location: index.php");
 }
 
 if (isset($_POST['login'])) {
@@ -25,7 +25,7 @@ if (isset($_POST['login'])) {
             $_SESSION['user_name'] = $row['name'];
             $_SESSION['user_email'] = $row['email'];
             $_SESSION['user_mobile'] = $row['mobile'];
-            header("Location: dashboard.php");
+            header("Location: index.php");
         } 
     }else {
         $error_message = "Incorrect Email or Password!!!";

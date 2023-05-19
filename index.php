@@ -1,13 +1,15 @@
 <?php
+session_start();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Save data to the database and upload images
+    
     $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
-    // Prepare the statement for inserting data
-    $stmt = $mysqli->prepare('INSERT INTO posts (image, caption) VALUES (?, ?)');
-    $stmt->bind_param('ss', $image, $caption);
+    $stmt = $mysqli->prepare('INSERT INTO posts (user_id, image, caption) VALUES (?, ?, ?)');
+    $stmt->bind_param('iss', $user_id, $image, $caption);
 
-    // Process each uploaded image and caption
+    $user_id = $_SESSION['user_id'];
+
     $fileCount = count($_FILES['image']['name']);
     for ($i = 0; $i < $fileCount; $i++) {
         $targetDirectory = 'uploads/';
@@ -21,11 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute();
     }
 
-    // Close the statement and database connection
     $stmt->close();
     $mysqli->close();
 
-    // Redirect to the display page
     header('Location: display.php');
     exit();
 }
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   <?php } else { ?>
     <div class="upload-success">
-      <p>Upload successful! Redirecting to display page...</p>
+      <p>Upload successful! Redirecting to the display page...</p>
     </div>
     <script>
       setTimeout(function() {

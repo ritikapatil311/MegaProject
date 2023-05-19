@@ -61,11 +61,12 @@ if (!isset($_SESSION['user_id'])) {
     <?php
     $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
-    $result = $mysqli->query('SELECT * FROM posts ORDER BY id DESC');
+    $result = $mysqli->query('SELECT posts.*, users.name AS username FROM posts JOIN users ON posts.user_id = users.uid ORDER BY posts.id DESC');
 
     while ($row = $result->fetch_assoc()) {
         echo '<div class="post">';
         echo '<img src="' . htmlspecialchars($row['image']) . '" alt="Post Image">';
+        echo '<p>Uploaded by: ' . htmlspecialchars($row['username']) . '</p>';
         echo '<p>' . htmlspecialchars($row['caption']) . '</p>';
         echo '</div>';
     }

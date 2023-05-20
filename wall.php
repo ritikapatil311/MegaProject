@@ -115,7 +115,7 @@
                 <a class="nav-link" href="display.php">COMMON WALL <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="wall1.php">Post Issue</a>
+                <a class="nav-link" href="index.php">Post Issue</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="history.php">History</a>
@@ -132,6 +132,7 @@
     <div class="centered">
         <h2>Jane Flex</h2>
         <p>Some text.</p>
+        
     </div>
 </div>
 </body>

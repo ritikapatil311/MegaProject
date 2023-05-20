@@ -67,6 +67,8 @@ if (!isset($_SESSION['user_id'])) {
         echo '<div class="post">';
         echo '<img src="' . htmlspecialchars($row['image']) . '" alt="Post Image">';
         echo '<p>Uploaded by: ' . htmlspecialchars($row['username']) . '</p>';
+        echo '<p>Pincode: ' . htmlspecialchars($row['pincode']) . '</p>';
+        echo '<p>Location: ' . htmlspecialchars($row['location']) . '</p>';
         echo '<p>' . htmlspecialchars($row['caption']) . '</p>';
         echo '</div>';
     }

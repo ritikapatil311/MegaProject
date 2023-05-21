@@ -39,10 +39,10 @@ if (isset($_POST['logout'])) {
         }
         .chart-card {
             margin-top: 20px;
-            width: 300px;
+            width: 600px;
             height: 300px;
             margin-left: auto;
-            margin-right: 20px;
+            margin-right: auto;
         }
     </style>
 </head>
@@ -60,7 +60,7 @@ if (isset($_POST['logout'])) {
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2 sidebar">
-               <!-- Sidebar content here -->
+                <!-- Sidebar content here -->
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" href="admin.php">Manage Users</a>
@@ -69,7 +69,7 @@ if (isset($_POST['logout'])) {
                         <a class="nav-link" href="adminUsers.php">Users</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="display.php">Posts</a>
+                        <a class="nav-link" href="posts.php">Posts</a>
                     </li>
                 </ul>
             </div>
@@ -86,12 +86,19 @@ if (isset($_POST['logout'])) {
                 }
 
                 // Fetch post statistics
-                $result = $mysqli->query('SELECT users.name, COUNT(posts.id) AS post_count FROM posts INNER JOIN users ON posts.user_id = users.uid GROUP BY users.uid');
-                $data = array();
-                $labels = array();
-                while ($row = $result->fetch_assoc()) {
-                    $labels[] = $row['name'];
-                    $data[] = $row['post_count'];
+                $resultPosts = $mysqli->query('SELECT users.name, COUNT(posts.id) AS post_count FROM posts INNER JOIN users ON posts.user_id = users.uid GROUP BY users.uid');
+                $resultComments = $mysqli->query('SELECT politicians.name, COUNT(politician_comments.id) AS comment_count FROM politician_comments INNER JOIN politicians ON politician_comments.politician_id = politicians.id GROUP BY politicians.id');
+                $dataPosts = array();
+                $labelsPosts = array();
+                $dataComments = array();
+                $labelsComments = array();
+                while ($row = $resultPosts->fetch_assoc()) {
+                    $labelsPosts[] = $row['name'];
+                    $dataPosts[] = $row['post_count'];
+                }
+                while ($row = $resultComments->fetch_assoc()) {
+                    $labelsComments[] = $row['name'];
+                    $dataComments[] = $row['comment_count'];
                 }
 
                 // Close database connection
@@ -100,12 +107,23 @@ if (isset($_POST['logout'])) {
                 <div class="row">
                     <div class="col-md-8">
                         <div class="card">
-                            <div class="card-header">Post Statistics</div>
+                            <div class="card-header">Statistics</div>
                             <div class="card-body">
-                                <h5 class="card-title">Posts Distribution</h5>
-                                <p class="card-text">Number of posts by users:</p>
-                                <div class="chart-card">
-                                    <canvas id="postChart"></canvas>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="card-title">Posts Distribution</h5>
+                                        <p class="card-text">Number of posts by users:</p>
+                                        <div class="chart-card">
+                                            <canvas id="postChart"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="card-title">Comments Distribution</h5>
+                                        <p class="card-text">Number of comments by politicians:</p>
+                                        <div class="chart-card">
+                                            <canvas id="commentChart"></canvas>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -117,13 +135,13 @@ if (isset($_POST['logout'])) {
 
     <script>
         // Chart configuration
-        var ctx = document.getElementById('postChart').getContext('2d');
-        var postChart = new Chart(ctx, {
+        var ctxPosts = document.getElementById('postChart').getContext('2d');
+        var postChart = new Chart(ctxPosts, {
             type: 'pie',
             data: {
-                labels: <?php echo json_encode($labels); ?>,
+                labels: <?php echo json_encode($labelsPosts); ?>,
                 datasets: [{
-                    data: <?php echo json_encode($data); ?>,
+                    data: <?php echo json_encode($dataPosts); ?>,
                     backgroundColor: ['#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8'],
                 }]
             },
@@ -147,6 +165,43 @@ if (isset($_POST['logout'])) {
                         },
                         formatter: function(value, context) {
                             return value + ' posts';
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart configuration
+        var ctxComments = document.getElementById('commentChart').getContext('2d');
+        var commentChart = new Chart(ctxComments, {
+            type: 'pie',
+            data: {
+                labels: <?php echo json_encode($labelsComments); ?>,
+                datasets: [{
+                    data: <?php echo json_encode($dataComments); ?>,
+                    backgroundColor: ['#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8'],
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'right',
+                },
+                layout: {
+                    padding: 10,
+                },
+                plugins: {
+                    datalabels: {
+                        color: '#fff',
+                        backgroundColor: function(context) {
+                            return context.dataset.backgroundColor;
+                        },
+                        borderRadius: 4,
+                        font: {
+                            weight: 'bold'
+                        },
+                        formatter: function(value, context) {
+                            return value + ' comments';
                         }
                     }
                 }

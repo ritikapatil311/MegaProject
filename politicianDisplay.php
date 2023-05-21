@@ -5,6 +5,20 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
+    $comment = $_POST['comment'];
+    $postId = $_POST['postId'];
+    $politicianId = $_SESSION['user_id'];
+
+    // Insert the comment into the politician_comments table
+    $mysqli = new mysqli('localhost', 'root', '', 'rc');
+    $stmt = $mysqli->prepare('INSERT INTO politician_comments (politician_id, post_id, comment) VALUES (?, ?, ?)');
+    $stmt->bind_param('iis', $politicianId, $postId, $comment);
+    $stmt->execute();
+    $stmt->close();
+    $mysqli->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -48,12 +62,8 @@ if (!isset($_SESSION['user_id'])) {
       font-size: 14px;
     }
 
-    .comment {
+    .post .comment-form {
       margin-top: 10px;
-      font-size: 14px;
-      background-color: #eee;
-      padding: 5px;
-      border-radius: 4px;
     }
 
     .logout-btn {
@@ -63,9 +73,9 @@ if (!isset($_SESSION['user_id'])) {
   </style>
 </head>
 <body>
-
-<h1>Image Feed</h1>
-<div class="feed">
+<?php include 'header.php'; ?>
+  <h1>Image Feed</h1>
+  <div class="feed">
     <?php
     $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
@@ -79,21 +89,25 @@ if (!isset($_SESSION['user_id'])) {
         echo '<p>Location: ' . htmlspecialchars($row['location']) . '</p>';
         echo '<p>' . htmlspecialchars($row['caption']) . '</p>';
 
-        // Fetch politician comments for the post
-        $postID = $row['id'];
-        $commentsResult = $mysqli->query("SELECT politician_comments.*, politicians.name AS politician_name FROM politician_comments JOIN politicians ON politician_comments.politician_id = politicians.id WHERE politician_comments.post_id = $postID");
-        
-        if ($commentsResult) {
-            while ($commentRow = $commentsResult->fetch_assoc()) {
-                echo '<div class="comment">';
-                echo '<p>Politician: ' . htmlspecialchars($commentRow['politician_name']) . '</p>';
-                echo '<p>Comment: ' . htmlspecialchars($commentRow['comment']) . '</p>';
-                echo '</div>';
+        // Display existing comments
+        echo '<div class="comments">';
+        echo '<h4>Comments:</h4>';
+        $politicianId = $_SESSION['user_id'];
+        $politicianResult = $mysqli->query("SELECT comment FROM politician_comments WHERE politician_id = $politicianId AND post_id = " . $row['id']);
+        if ($politicianResult) {
+            while ($commentRow = $politicianResult->fetch_assoc()) {
+                echo '<p>' . htmlspecialchars($commentRow['comment']) . '</p>';
             }
-            $commentsResult->free();
-        } else {
-            echo '<p>No comments available</p>';
+            $politicianResult->free();
         }
+        echo '</div>';
+
+        // Comment form
+        echo '<form class="comment-form" action="' . htmlspecialchars($_SERVER["PHP_SELF"]) . '" method="post">';
+        echo '<input type="hidden" name="postId" value="' . htmlspecialchars($row['id']) . '">';
+        echo '<input type="text" name="comment" placeholder="Write a comment..." required>';
+        echo '<input type="submit" value="Comment">';
+        echo '</form>';
 
         echo '</div>';
     }
@@ -101,9 +115,9 @@ if (!isset($_SESSION['user_id'])) {
     $result->free();
     $mysqli->close();
     ?>
-</div>
-<div class="logout-btn">
+  </div>
+  <div class="logout-btn">
     <a href="logout.php" class="btn btn-danger">Logout</a>
-</div>
+  </div>
 </body>
 </html>

@@ -1,16 +1,28 @@
 <?php
 // header.php
 
+// header.php
+
 if (!isset($_SESSION)) {
-    session_start();
+  session_start();
 }
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
+  // Redirect to the appropriate login page based on the current file
+  $currentPage = basename($_SERVER['PHP_SELF']);
+  
+  if ($currentPage === 'politicianDisplay.php') {
+      header("Location: politicianLogin.php");
+  } elseif ($currentPage === 'adminDisplay.php') {
+      header("Location: adminLogin.php");
+  } else {
+      header("Location: login.php");
+  }
+  exit();
 }
 
 $activeUser = $_SESSION['user_name'];
+
 ?>
 
 <div class="header">

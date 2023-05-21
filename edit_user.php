@@ -75,5 +75,22 @@
   </div>
 
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Show success message and redirect after form submission
+    document.addEventListener('DOMContentLoaded', function() {
+      var form = document.querySelector('.user-form');
+      form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+        var popup = document.createElement('div');
+        popup.classList.add('alert', 'alert-success', 'mt-4');
+        popup.textContent = 'The user information has been updated successfully.';
+        document.querySelector('.container').appendChild(popup);
+        setTimeout(function() {
+          popup.remove(); // Remove success message after 3 seconds
+          window.location.href = 'admin.php'; // Redirect to admin.php
+        }, 3000);
+      });
+    });
+  </script>
 </body>
 </html>

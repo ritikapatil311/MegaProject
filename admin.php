@@ -168,6 +168,9 @@
         </div>
       </form>
     </div>
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="logout.php">Logout</a>
+    </div>
   </div>
 </body>
 </html>

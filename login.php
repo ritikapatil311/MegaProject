@@ -15,23 +15,24 @@ if (isset($_POST['login'])) {
         $email_error = "Please Enter Valid Email ID";
     }
     if(strlen($password) < 6) {
-        $password_error = "Password must be minimum of 6 characters";
+        $password_error = "Password must be a minimum of 6 characters";
     }  
 
+    // Check if the user is in the users table
     $result = mysqli_query($conn, "SELECT * FROM users WHERE email = '" . $email. "' and password = '" . md5($password). "'");
-    if(!empty($result)){
-        if ($row = mysqli_fetch_array($result)) {
-            $_SESSION['user_id'] = $row['uid'];
-            $_SESSION['user_name'] = $row['name'];
-            $_SESSION['user_email'] = $row['email'];
-            $_SESSION['user_mobile'] = $row['mobile'];
-            header("Location: wall.php"); // Redirect to wall.php
-            exit();
-        } 
-    } else {
-        $error_message = "Incorrect Email or Password!!!";
-        echo '<script>alert("Incorrect password or username")</script>';
+    if(mysqli_num_rows($result) > 0){
+        $row = mysqli_fetch_array($result);
+        $_SESSION['user_id'] = $row['uid'];
+        $_SESSION['user_name'] = $row['name'];
+        $_SESSION['user_email'] = $row['email'];
+        $_SESSION['user_mobile'] = $row['mobile'];
+
+        header("Location: wall.php"); // Redirect to wall.php for regular user
+        exit();
     }
+
+    $error_message = "Incorrect Email or Password!!!";
+    echo '<script>alert("Incorrect password or username")</script>';
 }
 ?>
 <!DOCTYPE html>

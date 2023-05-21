@@ -31,37 +31,18 @@ $userName = $_SESSION['user_name'];
       font-size: 20px;
       margin-bottom: 20px;
     }
-    .post {
-      background-color: #fff;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    .post-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .post-table th,
+    .post-table td {
       padding: 10px;
-      margin-bottom: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
     }
-    .post img {
-      max-width: 100%;
-      max-height: 300px; /* Adjust the max-height value as needed */
-      width: auto;
-      height: auto;
-      border-radius: 4px;
-      object-fit: contain;
-    }
-    .caption {
-      margin-top: 10px;
-      font-size: 14px;
-    }
-    .location {
-      font-size: 12px;
-      margin-top: 5px;
-      color: #888;
-    }
-    .pincode {
-      font-size: 12px;
-      color: #888;
+    .post-table th {
+      background-color: #f5f5f5;
     }
     .logout-btn {
       text-align: center;
@@ -72,31 +53,39 @@ $userName = $_SESSION['user_name'];
 <body>
   <?php include 'header.php'; ?>
   <h1>Image Feed</h1>
-  <div class="user-name">
-    Active User: <?php echo htmlspecialchars($userName); ?>
-  </div>
-  <div class="feed">
-    <?php
-    $mysqli = new mysqli('localhost', 'root', '', 'rc');
+  
+  <table class="post-table">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Caption</th>
+        <th>Location</th>
+        <th>Pin Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+      $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
-    $stmt = $mysqli->prepare('SELECT image, caption, location, pincode FROM posts WHERE user_id = ? ORDER BY id DESC');
-    $stmt->bind_param('i', $userID);
-    $stmt->execute();
-    $stmt->bind_result($image, $caption, $location, $pincode);
+      $stmt = $mysqli->prepare('SELECT image, caption, location, pincode FROM posts WHERE user_id = ? ORDER BY id DESC');
+      $stmt->bind_param('i', $userID);
+      $stmt->execute();
+      $stmt->bind_result($image, $caption, $location, $pincode);
 
-    while ($stmt->fetch()) {
-        echo '<div class="post">';
-        echo '<img src="' . htmlspecialchars($image) . '" alt="Post Image">';
-        echo '<p class="caption">' . htmlspecialchars($caption) . '</p>';
-        echo '<p class="location">' . htmlspecialchars($location) . '</p>';
-        echo '<p class="pincode">Pin Code: ' . htmlspecialchars($pincode) . '</p>';
-        echo '</div>';
-    }
+      while ($stmt->fetch()) {
+          echo '<tr>';
+          echo '<td><img src="' . htmlspecialchars($image) . '" alt="Post Image" style="max-width: 100px;"></td>';
+          echo '<td>' . htmlspecialchars($caption) . '</td>';
+          echo '<td>' . htmlspecialchars($location) . '</td>';
+          echo '<td>' . htmlspecialchars($pincode) . '</td>';
+          echo '</tr>';
+      }
 
-    $stmt->close();
-    $mysqli->close();
-    ?>
-  </div>
+      $stmt->close();
+      $mysqli->close();
+      ?>
+    </tbody>
+  </table>
   <div class="logout-btn">
     <a href="logout.php" class="btn btn-danger">Logout</a>
   </div>

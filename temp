@@ -1,79 +1,83 @@
+<?php
+// Database connection
+$mysqli = new mysqli('localhost', 'root', '', 'rc');
+
+// Check if the connection was successful
+if ($mysqli->connect_errno) {
+    echo 'Failed to connect to MySQL: ' . $mysqli->connect_error;
+    exit();
+}
+
+// Fetch post data
+$result = $mysqli->query('SELECT COUNT(*) AS total_posts, user_id FROM posts GROUP BY user_id');
+if ($result->num_rows > 0) {
+    $userLabels = [];
+    $postCounts = [];
+    while ($row = $result->fetch_assoc()) {
+        $userId = $row['user_id'];
+        $postCount = $row['total_posts'];
+
+        // Retrieve user details for the label
+        $userResult = $mysqli->query("SELECT name FROM users WHERE uid = $userId");
+        if ($userResult && $userRow = $userResult->fetch_assoc()) {
+            $userLabels[] = $userRow['name'];
+        } else {
+            $userLabels[] = 'Unknown User';
+        }
+
+        $postCounts[] = $postCount;
+    }
+}
+
+// Close database connection
+$mysqli->close();
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Edit User</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <style>
-    body {
-      padding-top: 40px;
-    }
-  </style>
+    <title>Post Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <?php
-    // Check if user ID is provided
-    if (isset($_GET['id'])) {
-        $userId = $_GET['id'];
+    <div class="container">
+        <h2>Post Dashboard</h2>
+        <canvas id="postChart"></canvas>
+    </div>
 
-        // Database connection
-        $mysqli = new mysqli('localhost', 'root', '', 'rc');
-
-        // Check if the connection was successful
-        if ($mysqli->connect_errno) {
-            echo 'Failed to connect to MySQL: ' . $mysqli->connect_error;
-            exit();
-        }
-
-        // Prepare statement
-        $stmt = $mysqli->prepare('SELECT uid, name, email, mobile, password, cpassword FROM users WHERE uid = ?');
-        $stmt->bind_param('i', $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        // Check if user exists
-        if ($result->num_rows === 1) {
-            $user = $result->fetch_assoc();
-
-            // Display user information
-            echo '<h2 class="mb-4">Edit User</h2>';
-            echo '<form class="user-form" action="update_user.php" method="POST">';
-            echo '<input type="hidden" name="uid" value="' . htmlspecialchars($user['uid']) . '">';
-            echo '<div class="form-group">';
-            echo '<label for="name">Name:</label>';
-            echo '<input type="text" class="form-control" name="name" id="name" value="' . htmlspecialchars($user['name']) . '" required>';
-            echo '</div>';
-            echo '<div class="form-group">';
-            echo '<label for="email">Email:</label>';
-            echo '<input type="text" class="form-control" name="email" id="email" value="' . htmlspecialchars($user['email']) . '" required>';
-            echo '</div>';
-            echo '<div class="form-group">';
-            echo '<label for="mobile">Mobile:</label>';
-            echo '<input type="text" class="form-control" name="mobile" id="mobile" value="' . htmlspecialchars($user['mobile']) . '" required>';
-            echo '</div>';
-            echo '<div class="form-group">';
-            echo '<label for="password">Password:</label>';
-            echo '<input type="password" class="form-control" name="password" id="password" required>';
-            echo '</div>';
-            echo '<div class="form-group">';
-            echo '<label for="cpassword">Confirm Password:</label>';
-            echo '<input type="password" class="form-control" name="cpassword" id="cpassword" required>';
-            echo '</div>';
-            echo '<button type="submit" class="btn btn-primary">Update</button>';
-            echo '</form>';
-        } else {
-            echo 'User not found';
-        }
-
-        // Close statement and database connection
-        $stmt->close();
-        $mysqli->close();
-    } else {
-        echo 'Invalid user ID';
-    }
-    ?>
-  </div>
-
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Create the pie chart
+        var ctx = document.getElementById('postChart').getContext('2d');
+        var postChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: <?php echo json_encode($userLabels); ?>,
+                datasets: [{
+                    data: <?php echo json_encode($postCounts); ?>,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)',
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'bottom',
+                },
+            }
+        });
+    </script>
 </body>
 </html>

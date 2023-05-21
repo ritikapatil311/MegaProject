@@ -14,7 +14,9 @@ $activeUser = $_SESSION['user_name'];
 ?>
 
 <div class="header">
-  <h2>Reality Check</h2>
+  <a href="wall.php" style="text-decoration: none; color: #fff;">
+    <h2>Reality Check</h2>
+  </a>
   <div class="user">
     <i class="fas fa-user"></i>
     <span><?php echo $activeUser; ?></span>

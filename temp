@@ -1,83 +1,96 @@
-<?php
-// Database connection
-$mysqli = new mysqli('localhost', 'root', '', 'rc');
-
-// Check if the connection was successful
-if ($mysqli->connect_errno) {
-    echo 'Failed to connect to MySQL: ' . $mysqli->connect_error;
-    exit();
-}
-
-// Fetch post data
-$result = $mysqli->query('SELECT COUNT(*) AS total_posts, user_id FROM posts GROUP BY user_id');
-if ($result->num_rows > 0) {
-    $userLabels = [];
-    $postCounts = [];
-    while ($row = $result->fetch_assoc()) {
-        $userId = $row['user_id'];
-        $postCount = $row['total_posts'];
-
-        // Retrieve user details for the label
-        $userResult = $mysqli->query("SELECT name FROM users WHERE uid = $userId");
-        if ($userResult && $userRow = $userResult->fetch_assoc()) {
-            $userLabels[] = $userRow['name'];
-        } else {
-            $userLabels[] = 'Unknown User';
-        }
-
-        $postCounts[] = $postCount;
-    }
-}
-
-// Close database connection
-$mysqli->close();
-?>
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Post Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-        }
-    </style>
+  <title>Image Feed</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .feed {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .post {
+      width: 600px;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .post img {
+      width: 100%;
+      height: auto;
+    }
+
+    .post p {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .post .comment-form {
+      margin-top: 10px;
+    }
+
+    .logout-btn {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Post Dashboard</h2>
-        <canvas id="postChart"></canvas>
-    </div>
+  <h1>Image Feed</h1>
+  <div class="feed">
+    <?php
+    $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
-    <script>
-        // Create the pie chart
-        var ctx = document.getElementById('postChart').getContext('2d');
-        var postChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: <?php echo json_encode($userLabels); ?>,
-                datasets: [{
-                    data: <?php echo json_encode($postCounts); ?>,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.7)',
-                        'rgba(54, 162, 235, 0.7)',
-                        'rgba(255, 206, 86, 0.7)',
-                        'rgba(75, 192, 192, 0.7)',
-                        'rgba(153, 102, 255, 0.7)',
-                        'rgba(255, 159, 64, 0.7)',
-                    ],
-                }]
-            },
-            options: {
-                responsive: true,
-                legend: {
-                    position: 'bottom',
-                },
+    $result = $mysqli->query('SELECT posts.*, users.name AS username FROM posts JOIN users ON posts.user_id = users.uid ORDER BY posts.id DESC');
+
+    while ($row = $result->fetch_assoc()) {
+        echo '<div class="post">';
+        echo '<img src="' . htmlspecialchars($row['image']) . '" alt="Post Image">';
+        echo '<p>Uploaded by: ' . htmlspecialchars($row['username']) . '</p>';
+        echo '<p>Pincode: ' . htmlspecialchars($row['pincode']) . '</p>';
+        echo '<p>Location: ' . htmlspecialchars($row['location']) . '</p>';
+        echo '<p>' . htmlspecialchars($row['caption']) . '</p>';
+
+        // Display existing comments
+        echo '<div class="comments">';
+        echo '<h4>Comments:</h4>';
+        $postId = $row['id'];
+        $commentResult = $mysqli->query("SELECT comment FROM politician_comments WHERE post_id = $postId");
+        if ($commentResult) {
+            while ($commentRow = $commentResult->fetch_assoc()) {
+                echo '<p>' . htmlspecialchars($commentRow['comment']) . '</p>';
             }
-        });
-    </script>
+            $commentResult->free();
+        }
+        echo '</div>';
+
+        // Comment form
+        echo '<form class="comment-form" action="' . htmlspecialchars($_SERVER["PHP_SELF"]) . '" method="post">';
+        echo '<input type="hidden" name="postId" value="' . htmlspecialchars($row['id']) . '">';
+        echo '<input type="text" name="comment" placeholder="Write a comment..." required>';
+        echo '<input type="submit" value="Comment">';
+        echo '</form>';
+
+        echo '</div>';
+    }
+
+    $result->free();
+    $mysqli->close();
+    ?>
+  </div>
 </body>
 </html>

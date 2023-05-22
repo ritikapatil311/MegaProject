@@ -1,23 +1,49 @@
 <?php
 session_start();
+$politicianId = ""; // Initialize politician ID
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
+if (isset($_SESSION['user_id'])) {
+    $politicianId = $_SESSION['user_id']; // Retrieve politician ID from session
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
-    $comment = $_POST['comment'];
-    $postId = $_POST['postId'];
-    $politicianId = $_SESSION['user_id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check if the user is logged in as a politician
+    if ($politicianId) {
+        $comment = $_POST['comment'];
+        $postId = $_POST['postId'];
 
-    // Insert the comment into the politician_comments table
-    $mysqli = new mysqli('localhost', 'root', '', 'rc');
-    $stmt = $mysqli->prepare('INSERT INTO politician_comments (politician_id, post_id, comment) VALUES (?, ?, ?)');
-    $stmt->bind_param('iis', $politicianId, $postId, $comment);
-    $stmt->execute();
-    $stmt->close();
-    $mysqli->close();
+        // Connect to the database
+        $mysqli = new mysqli('localhost', 'root', '', 'rc');
+
+        // Check connection
+        if ($mysqli->connect_error) {
+            die('Connection failed: ' . $mysqli->connect_error);
+        }
+
+        // Prepare the SQL statement to insert the comment
+        $stmt = $mysqli->prepare('INSERT INTO politician_comments (post_id, politician_id, comment) VALUES (?, ?, ?)');
+
+        // Bind the parameters
+        $stmt->bind_param('iis', $postId, $politicianId, $comment);
+
+        // Execute the query
+        if ($stmt->execute()) {
+            // Comment inserted successfully
+            // Redirect to the same page to avoid duplicate form submissions
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        } else {
+            // Failed to insert comment
+            echo "Error: " . $stmt->error;
+        }
+
+        // Close the statement and database connection
+        $stmt->close();
+        $mysqli->close();
+    } else {
+        // User is not logged in as a politician
+        echo "You must be logged in as a politician to comment.";
+    }
 }
 ?>
 
@@ -62,6 +88,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
       font-size: 14px;
     }
 
+    .post .comments {
+      margin-top: 10px;
+    }
+
+    .post .comments h4 {
+      margin-bottom: 5px;
+    }
+
+    .post .comments p {
+      margin-bottom: 5px;
+    }
+
     .post .comment-form {
       margin-top: 10px;
     }
@@ -73,7 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
   </style>
 </head>
 <body>
-<?php include 'header.php'; ?>
   <h1>Image Feed</h1>
   <div class="feed">
     <?php
@@ -92,13 +129,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
         // Display existing comments
         echo '<div class="comments">';
         echo '<h4>Comments:</h4>';
-        $politicianId = $_SESSION['user_id'];
-        $politicianResult = $mysqli->query("SELECT comment FROM politician_comments WHERE politician_id = $politicianId AND post_id = " . $row['id']);
-        if ($politicianResult) {
-            while ($commentRow = $politicianResult->fetch_assoc()) {
+        $postId = $row['id'];
+        $commentResult = $mysqli->query("SELECT comment FROM politician_comments WHERE post_id = $postId AND politician_id = $politicianId");
+        if ($commentResult) {
+            while ($commentRow = $commentResult->fetch_assoc()) {
                 echo '<p>' . htmlspecialchars($commentRow['comment']) . '</p>';
             }
-            $politicianResult->free();
+            $commentResult->free();
         }
         echo '</div>';
 
@@ -115,9 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
     $result->free();
     $mysqli->close();
     ?>
-  </div>
-  <div class="logout-btn">
-    <a href="logout.php" class="btn btn-danger">Logout</a>
   </div>
 </body>
 </html>

@@ -5,38 +5,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Connect to the database
+    
     $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
-    // Check connection
+    
     if ($mysqli->connect_error) {
         die('Connection failed: ' . $mysqli->connect_error);
     }
 
-    // Prepare the SQL statement
+    
     $stmt = $mysqli->prepare('SELECT id FROM politicians WHERE email = ? AND password = ?');
 
-    // Bind the parameters
+    
     $stmt->bind_param('ss', $email, $password);
 
-    // Execute the query
+    
     $stmt->execute();
 
-    // Bind the result
+    
     $stmt->bind_result($politicianId);
 
-    // Fetch the result
+    
     if ($stmt->fetch()) {
-        // Login successful
+        
         $_SESSION['user_id'] = $politicianId;
-        header("Location: politicianDisplay.php");
+        header("Location: politicianDashboard.php");
         exit();
     } else {
-        // Login failed
+
         echo "Invalid login credentials";
     }
 
-    // Close the statement and database connection
+    
     $stmt->close();
     $mysqli->close();
 }

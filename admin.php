@@ -3,7 +3,6 @@
 <head>
   <title>User Management</title>
   <style>
-    /* CSS styles here */
     body {
       font-family: Arial, sans-serif;
       background-color: #f1f1f1;
@@ -68,7 +67,7 @@
       cursor: pointer;
     }
 
-    /* Admin Matrix Template CSS */
+   
     .admin-matrix {
       background-color: #f9f9f9;
       border-radius: 4px;
@@ -115,18 +114,18 @@
     <div class="admin-matrix">
       <div class="header">User List</div>
       <ul class="user-list">
-        <!-- PHP logic to retrieve and display users -->
+        
         <?php
-        // Database connection
+        
         $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
-        // Check if the connection was successful
+        
         if ($mysqli->connect_errno) {
             echo 'Failed to connect to MySQL: ' . $mysqli->connect_error;
             exit();
         }
 
-        // Fetch users
+       
         $result = $mysqli->query('SELECT uid, name FROM users');
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
@@ -145,7 +144,7 @@
             echo '<li>No users found</li>';
         }
 
-        // Close database connection
+        
         $mysqli->close();
         ?>
       </ul>
@@ -169,6 +168,7 @@
       </form>
     </div>
     <div style="text-align: center; margin-top: 20px;">
+    <a href="adminDashboard.php">Home</a>
       <a href="logout.php">Logout</a>
     </div>
   </div>

@@ -1,15 +1,15 @@
 <?php
 session_start();
 
-// Check if the admin is not logged in, redirect to login page
+
 if (!isset($_SESSION['admin_id'])) {
     header("Location: adminLogin.php");
     exit();
 }
 
-// Check if logout request is submitted
+
 if (isset($_POST['logout'])) {
-    // Destroy the session and redirect to login page
+   
     session_destroy();
     header("Location: adminLogin.php");
     exit();
@@ -71,21 +71,27 @@ if (isset($_POST['logout'])) {
                     <li class="nav-item">
                         <a class="nav-link" href="posts.php">Posts</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Requests.php">Requests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="CompletedTask.php">Tasks</a>
+                    </li>
                 </ul>
             </div>
             <div class="col-md-10 content">
-                <!-- Content here -->
+               
                 <?php
-                // Database connection
+                
                 $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
-                // Check if the connection was successful
+                
                 if ($mysqli->connect_errno) {
                     echo 'Failed to connect to MySQL: ' . $mysqli->connect_error;
                     exit();
                 }
 
-                // Fetch post statistics
+                
                 $resultPosts = $mysqli->query('SELECT users.name, COUNT(posts.id) AS post_count FROM posts INNER JOIN users ON posts.user_id = users.uid GROUP BY users.uid');
                 $resultComments = $mysqli->query('SELECT politicians.name, COUNT(politician_comments.id) AS comment_count FROM politician_comments INNER JOIN politicians ON politician_comments.politician_id = politicians.id GROUP BY politicians.id');
                 $dataPosts = array();
@@ -101,7 +107,7 @@ if (isset($_POST['logout'])) {
                     $dataComments[] = $row['comment_count'];
                 }
 
-                // Close database connection
+                
                 $mysqli->close();
                 ?>
                 <div class="row">
@@ -134,7 +140,7 @@ if (isset($_POST['logout'])) {
     </div>
 
     <script>
-        // Chart configuration
+       
         var ctxPosts = document.getElementById('postChart').getContext('2d');
         var postChart = new Chart(ctxPosts, {
             type: 'pie',
@@ -171,7 +177,7 @@ if (isset($_POST['logout'])) {
             }
         });
 
-        // Chart configuration
+        
         var ctxComments = document.getElementById('commentChart').getContext('2d');
         var commentChart = new Chart(ctxComments, {
             type: 'pie',

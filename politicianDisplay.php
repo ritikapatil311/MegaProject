@@ -1,47 +1,47 @@
 <?php
 session_start();
-$politicianId = ""; // Initialize politician ID
+$politicianId = ""; 
 
 if (isset($_SESSION['user_id'])) {
-    $politicianId = $_SESSION['user_id']; // Retrieve politician ID from session
+    $politicianId = $_SESSION['user_id']; 
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if the user is logged in as a politician
+    
     if ($politicianId) {
         $comment = $_POST['comment'];
         $postId = $_POST['postId'];
 
-        // Connect to the database
+        
         $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
-        // Check connection
+        
         if ($mysqli->connect_error) {
             die('Connection failed: ' . $mysqli->connect_error);
         }
 
-        // Prepare the SQL statement to insert the comment
+        
         $stmt = $mysqli->prepare('INSERT INTO politician_comments (post_id, politician_id, comment) VALUES (?, ?, ?)');
 
-        // Bind the parameters
+        
         $stmt->bind_param('iis', $postId, $politicianId, $comment);
 
-        // Execute the query
+        
         if ($stmt->execute()) {
-            // Comment inserted successfully
-            // Redirect to the same page to avoid duplicate form submissions
+            
+            
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         } else {
-            // Failed to insert comment
+            
             echo "Error: " . $stmt->error;
         }
 
-        // Close the statement and database connection
+        
         $stmt->close();
         $mysqli->close();
     } else {
-        // User is not logged in as a politician
+        
         echo "You must be logged in as a politician to comment.";
     }
 }
@@ -52,56 +52,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <title>Image Feed</title>
   <style>
+    <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
+      background-color: #fafafa;
     }
 
     h1 {
       text-align: center;
+      margin-bottom: 40px;
+      color: #262626;
     }
 
     .feed {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     .post {
-      width: 600px;
-      margin-bottom: 20px;
-      padding: 10px;
-      background-color: #f9f9f9;
+      margin-bottom: 40px;
+      background-color: #fff;
       border: 1px solid #ddd;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .post img {
       width: 100%;
-      height: auto;
+      display: block;
     }
 
-    .post p {
-      margin-top: 10px;
+    .post .details {
+      padding: 16px;
+    }
+
+    .post .details .username {
       font-size: 14px;
+      font-weight: bold;
+      color: #262626;
+      margin-bottom: 8px;
+    }
+
+    .post .details .location {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .post .details .caption {
+      font-size: 14px;
+      margin-bottom: 8px;
     }
 
     .post .comments {
-      margin-top: 10px;
+      padding: 16px;
+      background-color: #f9f9f9;
     }
 
-    .post .comments h4 {
-      margin-bottom: 5px;
+    .post .comments .comment {
+      margin-bottom: 8px;
     }
 
-    .post .comments p {
-      margin-bottom: 5px;
+    .post .comments .comment p {
+      font-size: 14px;
+      margin: 0;
     }
 
     .post .comment-form {
-      margin-top: 10px;
+      padding: 16px;
+      background-color: #f9f9f9;
+    }
+
+    .post .comment-form input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .post .comment-form input[type="submit"] {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+      background-color: #3897f0;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .post .comment-form input[type="submit"]:hover {
+      background-color: #2676d9;
     }
 
     .logout-btn {

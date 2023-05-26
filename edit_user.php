@@ -12,30 +12,30 @@
 <body>
   <div class="container">
     <?php
-    // Check if user ID is provided
+    
     if (isset($_GET['id'])) {
         $userId = $_GET['id'];
 
-        // Database connection
+        
         $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
-        // Check if the connection was successful
+        
         if ($mysqli->connect_errno) {
             echo 'Failed to connect to MySQL: ' . $mysqli->connect_error;
             exit();
         }
 
-        // Prepare statement
+        
         $stmt = $mysqli->prepare('SELECT uid, name, email, mobile, password, cpassword FROM users WHERE uid = ?');
         $stmt->bind_param('i', $userId);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        // Check if user exists
+        
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
 
-            // Display user information
+            
             echo '<h2 class="mb-4">Edit User</h2>';
             echo '<form class="user-form" action="update_user.php" method="POST">';
             echo '<input type="hidden" name="uid" value="' . htmlspecialchars($user['uid']) . '">';
@@ -65,7 +65,7 @@
             echo 'User not found';
         }
 
-        // Close statement and database connection
+        
         $stmt->close();
         $mysqli->close();
     } else {
@@ -76,7 +76,7 @@
 
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
-    // Show success message and redirect after form submission
+    
     document.addEventListener('DOMContentLoaded', function() {
       var form = document.querySelector('.user-form');
       form.addEventListener('submit', function(event) {
@@ -86,8 +86,8 @@
         popup.textContent = 'The user information has been updated successfully.';
         document.querySelector('.container').appendChild(popup);
         setTimeout(function() {
-          popup.remove(); // Remove success message after 3 seconds
-          window.location.href = 'admin.php'; // Redirect to admin.php
+          popup.remove(); 
+          window.location.href = 'admin.php'; 
         }, 3000);
       });
     });

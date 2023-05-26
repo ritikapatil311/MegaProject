@@ -1,50 +1,50 @@
 <?php
 session_start();
 
-// Check if the admin is already logged in
+
 if (isset($_SESSION['admin_id'])) {
-    // Redirect to the admin dashboard
+
     header("Location: adminDashboard.php");
     exit();
 }
 
-// Check if the login form is submitted
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Database connection
     $mysqli = new mysqli('localhost', 'root', '', 'rc');
 
-    // Check if the connection was successful
+
     if ($mysqli->connect_errno) {
         echo 'Failed to connect to MySQL: ' . $mysqli->connect_error;
         exit();
     }
 
-    // Sanitize the entered email and password to prevent SQL injection
+    
     $admin_email = $mysqli->real_escape_string($_POST['email']);
     $admin_password = $mysqli->real_escape_string($_POST['password']);
 
-    // Query the admins table to check the credentials
+    
     $query = "SELECT id FROM admins WHERE email = '$admin_email' AND password = MD5('$admin_password')";
     $result = $mysqli->query($query);
 
-    // Check if the login is successful
+    
     if ($result->num_rows === 1) {
-        // Get the admin ID from the query result
+        
         $row = $result->fetch_assoc();
         $admin_id = $row['id'];
 
-        // Set the admin session
+        
         $_SESSION['admin_id'] = $admin_id;
 
-        // Redirect to the admin dashboard
+       
         header("Location: adminDashboard.php");
         exit();
     } else {
-        // Invalid login credentials, show an error message
+        
         $error_message = "Invalid login credentials";
     }
 
-    // Close database connection
+    
     $mysqli->close();
 }
 ?>

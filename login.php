@@ -18,7 +18,7 @@ if (isset($_POST['login'])) {
         $password_error = "Password must be a minimum of 6 characters";
     }  
 
-    // Check if the user is in the users table
+    
     $result = mysqli_query($conn, "SELECT * FROM users WHERE email = '" . $email. "' and password = '" . md5($password). "'");
     if(mysqli_num_rows($result) > 0){
         $row = mysqli_fetch_array($result);
@@ -27,7 +27,7 @@ if (isset($_POST['login'])) {
         $_SESSION['user_email'] = $row['email'];
         $_SESSION['user_mobile'] = $row['mobile'];
 
-        header("Location: wall.php"); // Redirect to wall.php for regular user
+        header("Location: wall.php"); 
         exit();
     }
 

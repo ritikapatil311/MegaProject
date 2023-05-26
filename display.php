@@ -79,7 +79,7 @@ if (!isset($_SESSION['user_id'])) {
         echo '<p>Location: ' . htmlspecialchars($row['location']) . '</p>';
         echo '<p>' . htmlspecialchars($row['caption']) . '</p>';
 
-        // Fetch politician comments for the post
+        
         $postID = $row['id'];
         $commentsResult = $mysqli->query("SELECT politician_comments.*, politicians.name AS politician_name FROM politician_comments JOIN politicians ON politician_comments.politician_id = politicians.id WHERE politician_comments.post_id = $postID");
         

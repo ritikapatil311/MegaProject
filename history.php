@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-// Check if the user is logged in
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
 
-// Retrieve the logged-in user's ID and name from the session
+
 $userID = $_SESSION['user_id'];
 $userName = $_SESSION['user_name'];
 ?>

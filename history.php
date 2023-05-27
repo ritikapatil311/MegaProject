@@ -20,7 +20,8 @@ $userName = $_SESSION['user_name'];
     /* CSS styles here */
     body {
       font-family: Arial, sans-serif;
-      background-color: #f1f1f1;
+      background-color: #141d26;
+      color: #fff;
     }
     .container {
       max-width: 600px;
@@ -39,14 +40,28 @@ $userName = $_SESSION['user_name'];
     .post-table td {
       padding: 10px;
       text-align: left;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #344656;
     }
     .post-table th {
-      background-color: #f5f5f5;
+      background-color: #192734;
+    }
+    .post-table img {
+      max-width: 100px;
     }
     .logout-btn {
       text-align: center;
       margin-top: 20px;
+    }
+    .logout-btn a {
+      background-color: #1da1f2;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+    }
+    .logout-btn a:hover {
+      background-color: #0c87b8;
     }
   </style>
 </head>

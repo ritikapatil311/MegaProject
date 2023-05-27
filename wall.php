@@ -1,140 +1,133 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-        <style>
-            
-            .split {
-                height: 100%;
-                width: 50%;
-                position: fixed;
-                z-index: 1;
-                top: 100px;
-                overflow-x: hidden;
-                padding-top: 20px;
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: linear-gradient(to right, #c31432, #240b36);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
 
-            /* Control the left side */
-            .left {
-                left: 0;
-            }
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-top: 50px;
+        }
 
-            /* Control the right side */
-            .right {
-                right: 0;
-            }
+        .split {
+            height: 100%;
+            width: 50%;
+            position: fixed;
+            z-index: 1;
+            top: 100px;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
 
-            /* If you want the content centered horizontally and vertically */
-            .centered {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                text-align: center;
-            }
+        .left {
+            left: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
 
-            /* Style the image inside the centered container, if needed */
-            .centered img {
-                width: 150px;
-                border-radius: 50%;
-            }
+        .right {
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
 
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding:;
-            }
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
 
-            h1 {
-                text-align: center;
-            }
+        .centered h2 {
+            color: #000;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
 
-            .feed {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
+        .centered p {
+            color: #000;
+            font-size: 16px;
+        }
 
-            .post {
-                width: 600px;
-                margin-bottom: 20px;
-                padding: 10px;
-                background-color: #f9f9f9;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
+        .navbar {
+            background-color: #fff;
+        }
 
-            .post img {
-                width: 100%;
-                height: auto;
-            }
+        .navbar-brand {
+            color: #c31432;
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-            .post p {
-                margin-top: 10px;
-                font-size: 14px;
-            }
+        .navbar-brand:hover {
+            color: #240b36;
+        }
 
-            .logout-btn {
-                text-align: center;
-                margin-top: 20px;
-            }
-        </style>
-    </head>
+        .navbar-toggler {
+            border: none;
+        }
 
-    <body>
-    <div class="pos-f-t">
-        <div class="collapse" id="navbarToggleExternalContent">
-            <div class="bg-dark p-4">
-                <h4 class="text-white">REALTIY CHECK</h4>
-                <span class="text-muted">society issues are being solved</span>
-            </div>
-        </div>
-        <nav class="navbar navbar-dark bg-dark">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </nav>
+        .nav-link {
+            color: #000;
+        }
+
+        .nav-link:hover {
+            color: #c31432;
+        }
+    </style>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="#">REALITY CHECK</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="display.php">CommonWall</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="index.php">Post</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="history.php">Histoy</a>
+            </li>
+        </ul>
     </div>
+</nav>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">REALITY CHECK</a>
-        <i style='font-size:24px' class='fab'>&#xf2ae;</i>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<h1>Welcome to the Dashboard</h1>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="display.php">COMMON WALL <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php">Post Issue</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="history.php">History</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="split left">
-        <div class="centered"></div>
+<div class="split left">
+    <div class="centered">
+        <h2>Left Section</h2>
+        <p>This is the left section of the dashboard.</p>
     </div>
+</div>
 
-    <div class="split right">
-        <div class="centered">
-            <h2>Jane Flex</h2>
-            <p>Some text.</p>
-            
-        </div>
+<div class="split right">
+    <div class="centered">
+        <h2>Right Section</h2>
+        <p>This is the right section of the dashboard.</p>
     </div>
-    </body>
-    </html>
+</div>
+</body>
+</html>

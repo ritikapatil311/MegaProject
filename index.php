@@ -43,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
+      background-color: #141d26;
+      color: #fff;
     }
 
     h1 {
@@ -52,9 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .upload-form {
       max-width: 400px;
       margin: 0 auto;
-      border: 1px solid #ddd;
+      border: 1px solid #344656;
       padding: 20px;
-      background-color: #f9f9f9;
+      background-color: #192734;
+      border-radius: 8px;
     }
 
     .upload-form input[type="file"],
@@ -63,14 +66,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       width: 100%;
       margin-bottom: 10px;
       padding: 10px;
-      border: 1px solid #ddd;
+      border: 1px solid #344656;
       border-radius: 4px;
       box-sizing: border-box;
       resize: vertical;
+      background-color: #253341;
+      color: #fff;
     }
 
     .upload-form button {
-      background-color: #4CAF50;
+      background-color: #1da1f2;
       color: white;
       padding: 10px 20px;
       border: none;
@@ -80,22 +85,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     .upload-form button:hover {
-      background-color: #45a049;
+      background-color: #0c87b8;
     }
 
     .success-message {
       text-align: center;
-      background-color: #d4edda;
-      color: #155724;
+      background-color: #196f3d;
+      color: #d4edda;
       padding: 10px;
       margin-bottom: 10px;
-      border: 1px solid #c3e6cb;
+      border: 1px solid #14532d;
       border-radius: 4px;
     }
 
     .go-back-button {
       text-align: center;
       margin-top: 10px;
+    }
+
+    a {
+      color: #1da1f2;
     }
   </style>
 </head>

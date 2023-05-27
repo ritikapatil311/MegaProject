@@ -16,10 +16,14 @@ if (!isset($_SESSION['user_id'])) {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
+      background-color: #141d26;
+      color: #fff;
     }
 
     h1 {
       text-align: center;
+      margin-bottom: 20px;
+      color: #1da1f2;
     }
 
     .feed {
@@ -32,15 +36,15 @@ if (!isset($_SESSION['user_id'])) {
       width: 600px;
       margin-bottom: 20px;
       padding: 10px;
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background-color: #192734;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .post img {
       width: 100%;
       height: auto;
+      border-radius: 8px;
     }
 
     .post p {
@@ -51,14 +55,35 @@ if (!isset($_SESSION['user_id'])) {
     .comment {
       margin-top: 10px;
       font-size: 14px;
-      background-color: #eee;
-      padding: 5px;
-      border-radius: 4px;
+      background-color: #253341;
+      padding: 8px;
+      border-radius: 8px;
+    }
+
+    .comment p {
+      margin: 0;
     }
 
     .logout-btn {
       text-align: center;
       margin-top: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #1da1f2;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #0c87b8;
     }
   </style>
 </head>
@@ -74,20 +99,19 @@ if (!isset($_SESSION['user_id'])) {
     while ($row = $result->fetch_assoc()) {
         echo '<div class="post">';
         echo '<img src="' . htmlspecialchars($row['image']) . '" alt="Post Image">';
-        echo '<p>Uploaded by: ' . htmlspecialchars($row['username']) . '</p>';
-        echo '<p>Pincode: ' . htmlspecialchars($row['pincode']) . '</p>';
-        echo '<p>Location: ' . htmlspecialchars($row['location']) . '</p>';
+        echo '<p><strong>Uploaded by:</strong> ' . htmlspecialchars($row['username']) . '</p>';
+        echo '<p><strong>Pincode:</strong> ' . htmlspecialchars($row['pincode']) . '</p>';
+        echo '<p><strong>Location:</strong> ' . htmlspecialchars($row['location']) . '</p>';
         echo '<p>' . htmlspecialchars($row['caption']) . '</p>';
 
-        
         $postID = $row['id'];
         $commentsResult = $mysqli->query("SELECT politician_comments.*, politicians.name AS politician_name FROM politician_comments JOIN politicians ON politician_comments.politician_id = politicians.id WHERE politician_comments.post_id = $postID");
         
-        if ($commentsResult) {
+        if ($commentsResult && $commentsResult->num_rows > 0) {
             while ($commentRow = $commentsResult->fetch_assoc()) {
                 echo '<div class="comment">';
-                echo '<p>Politician: ' . htmlspecialchars($commentRow['politician_name']) . '</p>';
-                echo '<p>Comment: ' . htmlspecialchars($commentRow['comment']) . '</p>';
+                echo '<p><strong>Politician:</strong> ' . htmlspecialchars($commentRow['politician_name']) . '</p>';
+                echo '<p><strong>Comment:</strong> ' . htmlspecialchars($commentRow['comment']) . '</p>';
                 echo '</div>';
             }
             $commentsResult->free();
@@ -103,7 +127,7 @@ if (!isset($_SESSION['user_id'])) {
     ?>
 </div>
 <div class="logout-btn">
-    <a href="logout.php" class="btn btn-danger">Logout</a>
+    <a href="logout.php" class="btn">Logout</a>
 </div>
 </body>
 </html>
